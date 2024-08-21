@@ -1,10 +1,10 @@
 import glob
-from dataclasses import dataclass
-from typing import List
+from model import Sequence
+from gp import do_gp
 
 def get_sequence_files(prefix: str):
     """
-    Get sequence files from repository
+    Get sequence files from prefix
 
     output: list of filenames
     """
@@ -14,33 +14,15 @@ def get_sequence_files(prefix: str):
         seq_files = glob.glob(f"../oeisdata/seq/{prefix}/*.seq")
     return seq_files
 
-@dataclass
-class Sequence:
+def get_sequence_file(seqid: str):
     """
-    Internal class for OEIS sequence data
+    Get sequence from id
+    TODO: maybe dont need actually
     """
-    seqid: str
-    first: List[int]
-    tags: List[str]
-
-    def __init__(self, filename: str):
-        f = open(filename, "r")
-        beginnings = []
-        for line in f:
-            if line.startswith("%I"):
-                self.seqid = line.split(" ")[1]
-            if line.startswith("%S") or line.startswith("%T") or line.startswith("%U"):
-                if line.endswith(",\n"):
-                    beginnings = beginnings + [int(i) for i in line[11:-2].split(",")]
-                else:
-                    beginnings = beginnings + [int(i) for i in line[11:-1].split(",")]
-            if line.startswith("%K"):
-                self.tags = line[11:-1].split(",")
-
-        self.first = beginnings
-
-        f.close()
-
+    print(f"../oeisdata/seq/{seqid[:4]}/{seqid[4:]}.seq")
+    seq_file = glob.glob(f"../oeisdata/seq/{seqid[:4]}/{seqid}.seq")
+    print(seq_file)
+    return seq_file[0]
 
 def test_single():
     f = "../oeisdata/seq/A000/A000001.seq"
@@ -57,7 +39,10 @@ def test_multiple():
 
     print(sequences)
 
-
+def test_gp():
+    #seq1id = "A000079"
+    seq2id = "A033999"
+    do_gp(Sequence(get_sequence_file(seq2id)).first)
 
 if __name__ == "__main__":
-    test_multiple()
+    test_gp()
