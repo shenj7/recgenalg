@@ -44,5 +44,14 @@ def test_gp():
     seq2id = "A033999"
     do_gp(Sequence(get_sequence_file(seq2id)).first)
 
+def test_multiple_easy():
+    files = get_sequence_files("A000")
+    sequences = []
+    for f in files:
+        s = Sequence(f)
+        if "easy" in s.tags:
+            sequences.append(s)
+
+
 if __name__ == "__main__":
     test_gp()
