@@ -34,6 +34,10 @@ def protectedPow(base, big):
 
 
 def do_gp(sequence: List[int]):
+    """
+    returns the population, log of the genetic algorithm, hall of fame, and the toolbox used.
+    TODO: seems inefficient, split out the toolbox maybe
+    """
     pset = gp.PrimitiveSet("MAIN", 1)
     pset.addPrimitive(operator.add, 2)
     pset.addPrimitive(operator.sub, 2)
@@ -101,4 +105,4 @@ def do_gp(sequence: List[int]):
     pop, log = algorithms.eaSimple(pop, toolbox, 0.5, 0.1, 10, stats=mstats,
                                    halloffame=hof, verbose=True)
     # print log
-    return pop, log, hof
+    return pop, log, hof, toolbox
