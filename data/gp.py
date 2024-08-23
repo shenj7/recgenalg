@@ -23,10 +23,10 @@ def protectedDiv(left, right):
         return left / right
     except ZeroDivisionError:
         return 1
+    except OverflowError:
+        return 1
 
 def protectedPow(base, big):
-    print(base)
-    print(big)
     if big < 0 or not isinstance(big, int):
         return 1
     else:
@@ -38,6 +38,7 @@ def do_gp(sequence: List[int]):
     returns the population, log of the genetic algorithm, hall of fame, and the toolbox used.
     TODO: seems inefficient, split out the toolbox maybe
     """
+    #functions chosen based on paper by d'ascoli
     pset = gp.PrimitiveSet("MAIN", 1)
     pset.addPrimitive(operator.add, 2)
     pset.addPrimitive(operator.sub, 2)
@@ -45,7 +46,7 @@ def do_gp(sequence: List[int]):
     pset.addPrimitive(protectedDiv, 2)
     pset.addPrimitive(operator.neg, 1)
     #pset.addPrimitive(protectedPow, 2)
-    pset.addEphemeralConstant("randint", partial(random.randint, -5, 5))
+    pset.addEphemeralConstant("randint", partial(random.randint, -10, 10))
     pset.renameArguments(ARG0='x')
 
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -72,13 +73,19 @@ def do_gp(sequence: List[int]):
         # Transform the tree expression in a callable function
         func = toolbox.compile(expr=individual)
         error = 0
-        print(individual)
+        #print(individual) #for debugging/transparancy
         for i in range(len(points)-1):
             #print(func(points[i]))
             ind = func(points[i])-points[i+1]
-            error = error + ind**2
+            try:
+                error = error + ind**2
+            except:
+                error = 9999999999 #TODO: this is definitely not the right way to do this
 
-        return error/(len(points)-1), #-1 because each pair of consecutive values is a sample
+        try:
+            return math.sqrt(error/(len(points)-1)), #-1 because each pair of consecutive values is a sample
+        except OverflowError:
+            return 999999.0,
 
     toolbox.register("evaluate", pairwiseEval, sequence)
     toolbox.register("select", tools.selTournament, tournsize=3)
