@@ -24,6 +24,13 @@ def protectedDiv(left, right):
     except ZeroDivisionError:
         return 1
 
+def protectedPow(base, big):
+    print(base)
+    print(big)
+    if big < 0 or not isinstance(big, int):
+        return 1
+    else:
+        return math.pow(base, big)
 
 
 def do_gp(sequence: List[int]):
@@ -33,8 +40,7 @@ def do_gp(sequence: List[int]):
     pset.addPrimitive(operator.mul, 2)
     pset.addPrimitive(protectedDiv, 2)
     pset.addPrimitive(operator.neg, 1)
-    pset.addPrimitive(math.cos, 1)
-    pset.addPrimitive(math.sin, 1)
+    #pset.addPrimitive(protectedPow, 2)
     pset.addEphemeralConstant("randint", partial(random.randint, -5, 5))
     pset.renameArguments(ARG0='x')
 
