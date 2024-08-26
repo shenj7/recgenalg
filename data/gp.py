@@ -33,7 +33,7 @@ def protectedPow(base, big):
         return math.pow(base, big)
 
 
-def do_gp(sequence: List[int]):
+def do_gp(sequence: List[int], seed: int):
     """
     returns the population, log of the genetic algorithm, hall of fame, and the toolbox used.
     TODO: seems inefficient, split out the toolbox maybe
@@ -96,8 +96,7 @@ def do_gp(sequence: List[int]):
     toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=17))
     toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=17))
 
-    #seed 1 just happens to be the corerct soltion
-    random.seed(139)
+    random.seed(seed)
     pop = toolbox.population(n=300)
     hof = tools.HallOfFame(1)
 
